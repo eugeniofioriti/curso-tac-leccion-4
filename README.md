@@ -5,7 +5,7 @@ A web application that converts natural language queries to SQL using AI, built 
 ## Features
 
 - 🗣️ Natural language to SQL conversion using OpenAI or Anthropic
-- 📁 Drag-and-drop file upload (.csv and .json)
+- 📁 Drag-and-drop file upload (.csv, .json, and .jsonl)
 - 📊 Interactive table results display
 - 🔒 SQL injection protection
 - ⚡ Fast development with Vite and uv
@@ -83,12 +83,20 @@ npm run dev
 
 1. **Upload Data**: Click "Upload Data" to open the modal
    - Use sample data buttons for quick testing
-   - Or drag and drop your own .csv or .json files
+   - Or drag and drop your own .csv, .json, or .jsonl files
    - Uploading a file with the same name will overwrite the existing table
 2. **Query Your Data**: Type a natural language query like "Show me all users who signed up last week"
    - Press `Cmd+Enter` (Mac) or `Ctrl+Enter` (Windows/Linux) to run the query
 3. **View Results**: See the generated SQL and results in a table format
 4. **Manage Tables**: Click the × button on any table to remove it
+
+### JSONL File Support
+
+JSONL (JSON Lines) files are supported with automatic flattening of nested structures:
+- **Nested objects** are flattened with `__` delimiter (e.g., `user.address.city` becomes `user__address__city`)
+- **Array items** are indexed with `_N` suffix (e.g., `tags[0]` becomes `tags_0`, `tags[1]` becomes `tags_1`)
+- **Varying schemas** across records are automatically discovered - all fields from all records are included in the table schema
+- **Missing fields** in individual records are stored as NULL values
 
 ## Development
 
@@ -135,7 +143,7 @@ npm run preview            # Preview production build
 
 ## API Endpoints
 
-- `POST /api/upload` - Upload CSV/JSON file
+- `POST /api/upload` - Upload CSV/JSON/JSONL file
 - `POST /api/query` - Process natural language query
 - `GET /api/schema` - Get database schema
 - `POST /api/insights` - Generate column insights
@@ -192,7 +200,7 @@ uv run pytest tests/test_sql_injection.py -v
 ### Additional Security Features
 
 - CORS configured for local development only
-- File upload validation (CSV and JSON only)
+- File upload validation (CSV, JSON, and JSONL only)
 - Comprehensive error logging without exposing sensitive data
 - Database operations are isolated with proper connection handling
 
